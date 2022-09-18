@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { env } from 'process';
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { verifyError } from "../middlewares/errorHandler";
@@ -11,7 +12,6 @@ declare module 'http' {
     }
 }
 
-
 export default function authorization(req: Request, res: Response, next: NextFunction) {
     const token: any = req.headers['x-access-token'];
 
@@ -19,7 +19,7 @@ export default function authorization(req: Request, res: Response, next: NextFun
 
     try {
 
-        const userInfo = jwt.verify(token, process.env.JWT_SECRET);
+        const userInfo = jwt.verify(token, env.JWT_SECRET);
         res.locals.userInfo = userInfo;
         next();
     } catch (error) {
