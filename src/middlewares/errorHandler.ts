@@ -33,3 +33,9 @@ export function errorHandler(err: ICustomError, _req: Request, res: Response, _n
 
     return res.status(500).send(err.message);
 }
+export function verifyError(status:number, message:string) {
+    return {
+        status,
+        message
+    }
+}

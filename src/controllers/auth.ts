@@ -1,12 +1,6 @@
 import { Request, Response } from 'express';
-
 import * as userService from '../services/user';
-
-import { TUserDetail } from '../types/userType';
-
-
-import { IUserRegisterData } from '../types/userType';
-
+import { TUserDetail, IUserRegisterData } from '../types/userType';
 interface ILoginResBody {
     token: string;
 }
@@ -16,7 +10,7 @@ export async function register(req: Request<{}, {}, IUserRegisterData>, res: Res
 
     await userService.register({ email, password });
 
-    res.status(201).send();
+    res.status(201).send({ message: "User successfully registered!" });
 }
 
 

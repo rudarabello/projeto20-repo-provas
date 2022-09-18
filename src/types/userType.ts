@@ -1,6 +1,6 @@
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 
-type TUserDetail = Omit<User, 'id'>;
+type TUserDetail = Omit<Users, 'id'>;
 
 interface IUserRegisterData extends TUserDetail {
     passwordConfirmation: string;

@@ -97,3 +97,7 @@ describe('/auth', () => {
         });
     });
 });
+
+afterAll(async () => {
+    await client.$disconnect();
+})

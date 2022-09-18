@@ -1,16 +1,16 @@
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 
 import client from '../config/prisma';
 import { TUserDetail } from '../types/userType';
 
-export async function findUserById(id: number): Promise<User | null> {
-    return client.user.findUnique({ where: { id } });
+export async function findUserById(id: number): Promise<Users | null> {
+    return client.users.findUnique({ where: { id } });
 }
 
-export async function findUserByEmail(email: string): Promise<User | null> {
-    return client.user.findUnique({ where: { email } });
+export async function findUserByEmail(email: string): Promise<Users | null> {
+    return client.users.findUnique({ where: { email } });
 }
 
 export async function insertUser(userData: TUserDetail): Promise<void> {
-    await client.user.create({ data: { ...userData } });
+    await client.users.create({ data: { ...userData } });
 }
