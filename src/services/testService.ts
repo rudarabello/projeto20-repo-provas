@@ -1,7 +1,7 @@
 import * as testMethods from "../repositories/testRepository";
 import { TestData } from "../types/testType";
 import { verifyError } from "../middlewares/errorHandler";
-import { findCategoryById } from "../repositories/categoriesRepository";
+import { findCategoryById } from "../repositories/categoryRepository";
 import { findTeacherDisciplineById } from "../repositories/disciplineRepository";
 
 export async function addTest(name: string,
