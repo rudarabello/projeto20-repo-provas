@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { validateSchema } from '../middlewares/validateSchema';
+import authorization from "../middlewares/authorization";
 import { getTerms } from "../services/termService";
 
 const termRouter = Router();
 
-termRouter.get('/terms', validateSchema('userSchema'), getTerms);
+termRouter.get('/terms', authorization, getTerms);
 
 export default termRouter;
