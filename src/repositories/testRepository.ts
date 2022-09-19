@@ -1,16 +1,16 @@
-import client from "../config/prisma";
+import prisma from "../database/prisma";
 import { TestData } from "../types/testType";
 
 export async function addTest(test: TestData) {
-    await client.tests.create({ data: test });
+    await prisma.tests.create({ data: test });
 }
 
 export async function findTestByName(name: string) {
-    return client.tests.findUnique({ where: { name } });
+    return prisma.tests.findUnique({ where: { name } });
 }
 
 export async function findTestByDisciplineId(id: number) {
-    return client.teachersDisciplines.findMany({
+    return prisma.teachersDisciplines.findMany({
         where: {
             disciplineId: id
         }, include: {
@@ -32,7 +32,7 @@ export async function findTestByDisciplineId(id: number) {
 }
 
 export async function findTestByTeacherId(id: number) {
-    return client.teachers.findMany({
+    return prisma.teachers.findMany({
         where: {
             id: id
         },

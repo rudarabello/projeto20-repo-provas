@@ -1,5 +1,5 @@
-import client from "../config/prisma";
+import prisma from "../database/prisma";
 
 export async function getAllTerms() {
-    return await client.terms.findMany();
+    return await prisma.terms.findMany();
 }

@@ -1,6 +1,6 @@
-import client from "../config/prisma";
+import prisma from "../database/prisma";
 
 
 export async function findCategoryById(id: number) {
-    return client.categories.findUnique({ where: { id } });
+    return prisma.categories.findUnique({ where: { id } });
 }

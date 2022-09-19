@@ -1,9 +1,9 @@
-import client from "../config/prisma";
+import prisma from "../database/prisma";
 
 export async function findTeacherDisciplineById(id: number) {
-    return client.teachersDisciplines.findUnique({ where: { id } });
+    return prisma.teachersDisciplines.findUnique({ where: { id } });
 };
 
 export async function getByTermId(id: number) {
-    return client.disciplines.findMany({ where: { termId: id } });
+    return prisma.disciplines.findMany({ where: { termId: id } });
 };
