@@ -1,12 +1,12 @@
-import supertest from 'supertest';
 import app from '../../src/app';
+import supertest from 'supertest';
 
-import prisma from "../../src/database/prisma";
+import prisma from "../../src/config/database";
 
-import { generateUser, inserUser } from '../factories/userFactory';
+import { generateUser, inserUser } from '../factories/userFactory'
 
 beforeEach(async () => {
-    await prisma.$executeRaw`TRUNCATE TABLE "Users"`;
+    await prisma.$executeRaw`TRUNCATE TABLE users;`;
 });
 
 const agent = supertest(app);
@@ -14,10 +14,9 @@ const agent = supertest(app);
 describe("POST /sign-up", () => {
     it("given a valid user it should answer with status 201 ", async () => {
         const user = await generateUser()
-        console.log(user);
-        const response = await supertest(app).post('/sign-up').send(user);
+        const response = await agent.post("/sign-up").send(user);
 
-        expect(response.status).toBe(201);
+        expect(response.status).toEqual(201);
     });
 
     it("given a user already registred it should answer with status 409", async () => {
