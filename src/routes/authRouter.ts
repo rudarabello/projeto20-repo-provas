@@ -1,17 +1,10 @@
-import { Router } from 'express';
+import { Router } from "express";
+import { register, login } from "../controllers/authController";
+import authValidation from "../middlewares/authvalidation";
 
-import * as authController from '../controllers/authController';
-import { validateSchema } from '../middlewares/validateSchema';
+const authRouter = Router();
 
-const router = Router();
+authRouter.post('/sign-up', authValidation, register);
+authRouter.post('/sign-in', authValidation, login);
 
-router.post('/register',
-    validateSchema('newUserSchema'),
-    authController.register
-);
-router.post('/login',
-    validateSchema('userSchema'),
-    authController.login
-);
-
-export default router;
+export default authRouter;
