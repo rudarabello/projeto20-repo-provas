@@ -1,10 +1,17 @@
-import joi from "joi";
+import joi from 'joi';
 
-const authSchema = joi.object({
+const createUserSchema = joi.object({
     email: joi.string().email().required(),
-    password: joi.string().required(),
-    confirmPass: joi.any().valid(joi.ref('password')).required().label('Confirm password')
+    password: joi.string().min(10).required(),
+    confirmPassword: joi.any().equal(joi.ref('password'))
+        .required()
+        .label('Confirm password')
         .messages({ 'any.only': '{{#label}} does not match' })
-});
+})
 
-export default authSchema;
+const loginUserSchema = joi.object({
+    email: joi.string().email().required(),
+    password: joi.string().required()
+})
+
+export { createUserSchema, loginUserSchema }
