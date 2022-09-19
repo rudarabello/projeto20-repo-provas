@@ -1,47 +1,69 @@
-import * as testMethods from "../repositories/testRepository";
-import { TestData } from "../types/testType";
-import { verifyError } from "../middlewares/errorHandler";
-import { findCategoryById } from "../repositories/categoryRepository";
-import { findTeacherDisciplineById } from "../repositories/disciplineRepository";
+import * as testRepository from '../repositories/testRepository';
 
-export async function addTest(name: string,
-    pdfUrl: string,
-    categoryId: number,
-    teacherDisciplineId: number,
-) {
+import * as categoryService from '../services/categoryService';
+import * as teacherService from '../services/teacherService';
+import * as disciplineService from '../services/disciplineService';
+import * as teacherDisciplineService from '../services/teacherDisciplineService'
 
-    const checkTest = await testMethods.findTestByName(name);
-    if (checkTest) throw verifyError(409, "There's already a test registered with this name!");
+import * as errorUtils from '../utils/errorUtils';
+import * as emailUtils from '../utils/sendEmailUtils';
 
-    const category = await findCategoryById(categoryId);
-    if (!category) throw verifyError(404, "This category wasn't registered!");
 
-    const teacher = await findTeacherDisciplineById(teacherDisciplineId);
-    if (!teacher) throw verifyError(404, "There's no teacher registered with this ID!");
+interface ITest {
+    name: string;
+    pdfUrl: string;
+    categoryId: number;
+    teacherId: number;
+    disciplineId: number;
+}
 
-    const test: TestData = {
+
+export async function addTest(dataTest: ITest) {
+    const {
         name,
         pdfUrl,
         categoryId,
-        teacherDisciplineId
-    }
+        teacherId,
+        disciplineId
+    } = dataTest;
 
-    await testMethods.addTest(test).catch(() => {
-        verifyError(500, "Database error, couldn't insert test data!")
+    const category = await categoryService.getCategoryById(categoryId);
+    if (!category) throw errorUtils.notFoundError('category');
+
+    const teacher = await teacherService.getTeacherById(teacherId);
+    if (!teacher) throw errorUtils.notFoundError('teacher');
+
+    const discipline = await disciplineService.getDisciplineById(disciplineId);
+    if (!discipline) throw errorUtils.notFoundError('discipline');
+
+    const relationTeacherDiscipline = await teacherDisciplineService.getTeacherDiscipline(teacherId, disciplineId);
+    if (!relationTeacherDiscipline) throw errorUtils.notFoundError('relation between teacher and discipline');
+
+    const insertedTest = await testRepository.insertTest({
+        name,
+        pdfUrl,
+        categoryId,
+        teacherDisciplineId: relationTeacherDiscipline.id
     });
+
+    await emailUtils.sendEmail(insertedTest.id)
 };
 
-export async function testsByDiscipline(id: number) {
-    const tests = await testMethods.findTestByDisciplineId(id);
+export async function getTestsFromDiscipline() {
+    const tests = await testRepository.getTestsFromDiscipline();
 
     return tests;
 }
 
-export async function testsByTeacher(id: number) {
-    const tests = await testMethods.findTestByTeacherId(id);
+export async function getTestsFromTeacher() {
+    const tests = await testRepository.getTestsFromTeacher();
 
     return tests;
-};
+}
 
+export async function getTestFromId(id: number) {
+    const tests = await testRepository.getTestFromId(id);
 
+    return tests;
+}
 

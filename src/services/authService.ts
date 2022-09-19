@@ -23,3 +23,9 @@ export async function signIn(dataUser: authRepository.CreateUser) {
         console.log(error)
     }
 };
+
+export async function findUserById(id: number) {
+    const user = await authRepository.findById(id);
+
+    return user
+}
