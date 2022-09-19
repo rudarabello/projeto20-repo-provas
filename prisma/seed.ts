@@ -1,150 +1,102 @@
 import prisma from "../src/database/prisma";
 
 async function main() {
+    const terms = [
+        { number: 1 },
+        { number: 2 },
+        { number: 3 },
+        { number: 4 },
+        { number: 5 },
+        { number: 6 }
+    ]
 
-    await prisma.terms.upsert({
-        where: { id: 1 },
-        update: {},
-        create: { number: 1 }
-    });
+    await prisma.$transaction(
+        terms.map((term) =>
+            prisma.terms.upsert({
+                where: term,
+                update: {},
+                create: term,
+            })
+        )
+    );
 
-    await prisma.terms.upsert({
-        where: { id: 2 },
-        update: {},
-        create: { number: 2 }
-    });
+    const categories = [
+        { name: 'Projeto' },
+        { name: 'Prática' },
+        { name: 'Recuperação' }
+    ]
 
-    await prisma.terms.upsert({
-        where: { id: 3 },
-        update: {},
-        create: { number: 3 }
-    });
+    await prisma.$transaction(
+        categories.map((categorie) =>
+            prisma.categorys.upsert({
+                where: categorie,
+                update: {},
+                create: categorie,
+            })
+        )
+    );
 
-    await prisma.terms.upsert({
-        where: { id: 4 },
-        update: {},
-        create: { number: 4 }
-    });
+    const teachers = [
+        { name: 'Bruna Hamori' },
+        { name: 'Diego Pinho' }
+    ]
 
-    await prisma.terms.upsert({
-        where: { id: 5 },
-        update: {},
-        create: { number: 5 }
-    });
+    await prisma.$transaction(
+        teachers.map((teacher) =>
+            prisma.teachers.upsert({
+                where: teacher,
+                update: {},
+                create: teacher,
+            })
+        )
+    );
 
-    await prisma.terms.upsert({
-        where: { id: 6 },
-        update: {},
-        create: { number: 6 }
-    });
+    const disciplines = [
+        { name: 'HTML e CSS', termId: 1 },
+        { name: 'JavaScript', termId: 2 },
+        { name: 'React', termId: 3 },
+        { name: 'Planejamento', termId: 2 },
+    ]
 
-    await prisma.categories.upsert({
-        where: {},
-        update: {},
-        create: { name: "Projeto" }
-    });
+    await prisma.$transaction(
+        disciplines.map((discipline) =>
+            prisma.disciplines.upsert({
+                where: { name: discipline.name },
+                update: {},
+                create: discipline,
+            })
+        )
+    );
 
-    await prisma.categories.upsert({
-        where: {},
-        update: {},
-        create: { name: "Prática" }
-    });
+    const teachersDisciplines = [
+        { teacherId: 2, disciplineId: 1 },
+        { teacherId: 1, disciplineId: 2 },
+        { teacherId: 1, disciplineId: 3 },
+        { teacherId: 2, disciplineId: 4 },
+    ]
 
-    await prisma.categories.upsert({
-        where: {},
-        update: {},
-        create: { name: "Recuperação" }
-    });
-
-    await prisma.teachers.upsert({
-        where: {},
-        update: {},
-        create: { name: "Diego Pinho" }
-    });
-
-    await prisma.teachers.upsert({
-        where: {},
-        update: {},
-        create: { name: "Bruna Hamori" }
-    });
-
-    await prisma.disciplines.upsert({
-        where: {},
-        update: {},
-        create: { name: "HTML e CSS", termId: 1 }
-    });
-
-    await prisma.disciplines.upsert({
-        where: {},
-        update: {},
-        create: { name: "Javascript", termId: 2 }
-    });
-
-    await prisma.disciplines.upsert({
-        where: {},
-        update: {},
-        create: { name: "React", termId: 3 }
-    });
-
-    await prisma.disciplines.upsert({
-        where: {},
-        update: {},
-        create: { name: "Humildade", termId: 1 }
-    });
-
-    await prisma.disciplines.upsert({
-        where: {},
-        update: {},
-        create: { name: "Planejamento", termId: 2 }
-    });
-
-    await prisma.disciplines.upsert({
-        where: {},
-        update: {},
-        create: { name: "Autoconfiança", termId: 3 }
-    });
-
-    await prisma.teachersDisciplines.upsert({
-        where: {},
-        update: {},
-        create: { teacherId: 1, disciplineId: 1 }
-    });
-
-    await prisma.teachersDisciplines.upsert({
-        where: {},
-        update: {},
-        create: { teacherId: 1, disciplineId: 2 }
-    });
-
-    await prisma.teachersDisciplines.upsert({
-        where: {},
-        update: {},
-        create: { teacherId: 1, disciplineId: 3 }
-    });
-
-    await prisma.teachersDisciplines.upsert({
-        where: {},
-        update: {},
-        create: { teacherId: 2, disciplineId: 4 }
-    });
-
-    await prisma.teachersDisciplines.upsert({
-        where: {},
-        update: {},
-        create: { teacherId: 2, disciplineId: 5 }
-    });
-
-    await prisma.teachersDisciplines.upsert({
-        where: {},
-        update: {},
-        create: { teacherId: 2, disciplineId: 6 }
-    });
+    await prisma.$transaction(
+        teachersDisciplines.map((teachersDiscipline) =>
+            prisma.teachersDisciplines.upsert({
+                where: {
+                    teacher_discipline: {
+                        teacherId: teachersDiscipline.teacherId,
+                        disciplineId: teachersDiscipline.disciplineId
+                    }
+                },
+                update: {},
+                create: teachersDiscipline,
+            })
+        )
+    );
 
 }
 
-main().catch(e => {
-    console.log(e);
-    process.exit(1);
-}).finally(() => {
-    prisma.$disconnect();
-});
+main()
+    .catch(e => {
+        console.log(e);
+        process.exit(1);
+    })
+    .finally(() => {
+        prisma.$disconnect();
+    });
