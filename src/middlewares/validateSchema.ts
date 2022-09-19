@@ -1,19 +1,19 @@
 import { NextFunction, Request, Response } from 'express';
+import { ObjectSchema } from 'joi';
 
-import schemas from '../schemas/schemas';
-import { CustomError } from './errorHandler';
-
-type SchemasTypes = keyof typeof schemas;
-
-export function validateSchema(schema: SchemasTypes) {
-    return (req: Request, res: Response, next: NextFunction) => {
-        const { error } = schemas[schema].validate(req.body, { abortEarly: false });
+export default function (schema: ObjectSchema) {
+    return (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        const { error } = schema.validate(req.body, { abortEarly: false });
 
         if (error) {
-            const errorMessages = error.details.map((detail: { message: string }) => detail.message);
-            throw CustomError('error_unprocessable_entity', errorMessages);
+            const message: string[] = error.details.map((err: any) => err.message);
+            return res.status(422).send(message);
         }
 
-        return next();
-    };
+        next();
+    }
 }
