@@ -1,7 +1,7 @@
 import { verifyError } from "../middlewares/errorHandler";
 import * as authMethods from "../repositories/authRepository";
 import { UserData } from "../types/userType";
-import { generateToken, encrypt, validatePassword } from "../utils/authUtils";
+import { encrypt, generateToken, validatePassword } from "../utils/authUtils";
 
 export async function signUp(email: string, password: string, confirmPass: string) {
 
@@ -14,7 +14,7 @@ export async function signUp(email: string, password: string, confirmPass: strin
 
     const checkUser = await authMethods.findUserByEmail(email);
 
-    if (checkUser) throw verifyError(409, "This email was already registered!");
+    if (checkUser) throw verifyError(409, "This email was already registered");
 
     await authMethods.signUp(user).catch(
         () =>

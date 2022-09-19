@@ -1,23 +1,21 @@
-import { Request, Response } from 'express';
-import * as userService from '../services/user';
-import { TUserDetail, IUserRegisterData } from '../types/userType';
-interface ILoginResBody {
-    token: string;
-}
+import { Request, Response } from "express";
+import * as authServices from "../services/authService"
 
-export async function register(req: Request<{}, {}, IUserRegisterData>, res: Response) {
-    const { email, password } = req.body;
+export async function signUp(req: Request, res: Response) {
 
-    await userService.register({ email, password });
+    const { email, password, confirmPass }:
+        { email: string, password: string, confirmPass: string } = req.body;
+
+    await authServices.signUp(email, password, confirmPass);
 
     res.status(201).send({ message: "User successfully registered!" });
 }
 
+export async function signIn(req: Request, res: Response) {
+    const { email, password, confirmPass }:
+        { email: string, password: string, confirmPass: string } = req.body;
 
-export async function login(req: Request<{}, {}, TUserDetail>, res: Response<ILoginResBody>) {
-    const { email, password } = req.body;
+    const userInfo = await authServices.signIn(email, password, confirmPass);
 
-    const token = await userService.login({ email, password });
-
-    res.status(200).send({ token });
+    res.status(200).send(userInfo);
 }
