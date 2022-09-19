@@ -1,10 +1,10 @@
 import app from '../../src/app';
 import supertest from 'supertest';
-import client from '../../src/config/prisma';
+import prisma from '../../src/database/prisma';
 import { __userFactory } from "../factories/userFactory";
 
 beforeEach(async () => {
-    await client.$executeRaw`TRUNCATE TABLE "Users"`;
+    await prisma.$executeRaw`TRUNCATE TABLE "Users"`;
 });
 
 describe('POST /sign-up', () => {
@@ -51,5 +51,5 @@ describe('POST /sign-up', () => {
 });
 
 afterAll(async () => {
-    await client.$disconnect();
+    await prisma.$disconnect();
 });

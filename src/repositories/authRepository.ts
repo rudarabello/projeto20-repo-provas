@@ -1,10 +1,10 @@
 import prisma from "../database/prisma";
-import { TUserDetail } from '../types/userType';
+import { UserData } from '../types/userType';
 
 export async function findUserByEmail(email: string) {
     return await prisma.users.findUnique({ where: { email } });
 };
 
-export async function signUp(user: TUserDetail) {
+export async function signUp(user: UserData) {
     await prisma.users.create({ data: user });
 };
