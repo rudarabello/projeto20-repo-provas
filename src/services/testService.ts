@@ -18,7 +18,7 @@ interface ITest {
 }
 
 
-export async function addTest(dataTest: ITest) {
+export async function createTest(dataTest: ITest) {
     const {
         name,
         pdfUrl,

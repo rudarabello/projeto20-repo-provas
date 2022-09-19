@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authorization from "../middlewares/authorization";
+import { authorization } from "../middlewares/authorization";
 import { getTerms } from "../services/termService";
 
 const termRouter = Router();

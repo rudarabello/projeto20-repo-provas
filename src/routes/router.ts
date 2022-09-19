@@ -8,8 +8,8 @@ import disciplineRouter from "./disciplineRouter";
 
 const router = Router();
 
-router.use(testRouter);
 router.use(authRouter);
+router.use(testRouter);
 router.use(termRouter);
 router.use(disciplineRouter);
 

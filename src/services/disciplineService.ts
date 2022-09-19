@@ -1,6 +1,7 @@
-import * as disciplineMethods from "../repositories/disciplineRepository";
+import * as disciplineRepository from '../repositories/disciplineRepository'
 
-export async function getDisciplineByTermId(id: number) {
-    const disciplines = await disciplineMethods.getByTermId(id);
-    return disciplines;
+export async function getDisciplineById(id: number) {
+    const discipline = await disciplineRepository.getDisciplineById(id)
+
+    return discipline;
 }

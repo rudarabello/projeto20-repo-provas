@@ -1,33 +1,32 @@
-import { Request, Response } from "express";
-import * as testService from "../services/testService";
+import { Request, Response } from 'express';
 
-export async function newTest(req: Request, res: Response) {
-    const { name, pdfUrl, categoryId, teacherDisciplineId }:
-        {
-            name: string,
-            pdfUrl: string,
-            categoryId: number,
-            teacherDisciplineId: number
-        } = req.body;
+import * as testService from '../services/testService'
 
-    await testService.addTest(name, pdfUrl, categoryId, teacherDisciplineId);
+export async function createTest(
+    req: Request,
+    res: Response
+) {
+    const dataTest = req.body;
 
-    res.status(201).send({ message: "Test added!" });
-};
+    await testService.createTest(dataTest);
 
-export async function disciplineTests(req: Request, res: Response) {
-    const id: number = Number(req.params.id);
+    res.status(201).send('Test created sucessfully!')
+}
 
-    const tests = await testService.testsByDiscipline(id);
+export async function getTestsFromDiscipline(
+    req: Request,
+    res: Response
+) {
+    const tests = await testService.getTestsFromDiscipline()
 
-    res.status(200).send(tests);
-};
+    res.status(200).send(tests)
+}
 
-export async function teacherTests(req: Request, res: Response) {
-    const id: number = Number(req.params.id);
+export async function getTestsFromTeacher(
+    req: Request,
+    res: Response
+) {
+    const tests = await testService.getTestsFromTeacher()
 
-    const tests = await testService.testsByTeacher(id);
-
-    res.status(200).send(tests);
-};
-
+    res.status(200).send(tests)
+}

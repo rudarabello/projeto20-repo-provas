@@ -1,16 +1,15 @@
 import { Router } from "express";
-import testValidation from "../middlewares/testValidation";
-import authorization from "../middlewares/authorization";
-import {
-    newTest,
-    disciplineTests,
-    teacherTests
-} from "../controllers/testController";
+import * as testController from '../controllers/testController';
+import { tokenMiddleware } from '../middlewares/authorization';
+import schemaMiddleware from '../middlewares/schemaMiddleware';
+import testSchema from "../schemas/testSchema";
 
 const testRouter = Router();
 
-testRouter.post('/test/new', testValidation, authorization, newTest);
-testRouter.get('/disciplines/:id/tests', authorization, disciplineTests);
-testRouter.get('/teachers/:id/tests', authorization, teacherTests);
+testRouter.use(tokenMiddleware);
+
+testRouter.post('/tests', schemaMiddleware(testSchema), testController.createTest);
+testRouter.get('/disciplines/tests', testController.getTestsFromDiscipline);
+testRouter.get('/teachers/tests', testController.getTestsFromTeacher);
 
 export default testRouter;
