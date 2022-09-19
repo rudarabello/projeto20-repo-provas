@@ -1,10 +1,32 @@
+import { Users } from "@prisma/client";
 import prisma from "../database/prisma";
-import { UserData } from '../types/userType';
 
-export async function findUserByEmail(email: string) {
-    return prisma.users.findUnique({ where: { email } });
-};
+export type CreateUser = Omit<Users, "id">;
 
-export async function signUp(user: UserData) {
-    await prisma.users.create({ data: user });
-};
+export async function insertUser(dataUser: CreateUser) {
+    await prisma.users.create({
+        data: dataUser
+    })
+}
+
+export async function findByEmail(email: string) {
+    return await prisma.users.findFirst({
+        where: {
+            email
+        }
+    })
+}
+
+export async function findById(id: number) {
+    return await prisma.users.findUnique({
+        where: {
+            id
+        }
+    })
+}
+
+export async function getUsers() {
+    const user = await prisma.users.findMany()
+
+    return user
+}
