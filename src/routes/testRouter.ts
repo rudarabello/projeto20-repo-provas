@@ -5,7 +5,7 @@ import {
     newTest,
     disciplineTests,
     teacherTests
-} from "../controllers/test";
+} from "../controllers/testController";
 
 const testRouter = Router();
 

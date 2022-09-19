@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authorization from "../middlewares/authorization";
-import { getDisciplineByTermId } from "../controllers/discipline";
+import { getDisciplineByTermId } from "../controllers/disciplineController";
 
 const disciplineRouter = Router();
 
