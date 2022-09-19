@@ -8,7 +8,6 @@ import * as teacherDisciplineService from '../services/teacherDisciplineService'
 import * as errorUtils from '../utils/errorUtils';
 import * as emailUtils from '../utils/sendEmailUtils';
 
-
 interface ITest {
     name: string;
     pdfUrl: string;
@@ -16,7 +15,6 @@ interface ITest {
     teacherId: number;
     disciplineId: number;
 }
-
 
 export async function createTest(dataTest: ITest) {
     const {
@@ -47,7 +45,7 @@ export async function createTest(dataTest: ITest) {
     });
 
     await emailUtils.sendEmail(insertedTest.id)
-};
+}
 
 export async function getTestsFromDiscipline() {
     const tests = await testRepository.getTestsFromDiscipline();
@@ -66,4 +64,3 @@ export async function getTestFromId(id: number) {
 
     return tests;
 }
-

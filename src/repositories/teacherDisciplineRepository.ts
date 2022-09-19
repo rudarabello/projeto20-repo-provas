@@ -1,4 +1,4 @@
-import prisma from '../database/prisma';
+import prisma from '../config/database';
 
 export async function getTeacherDiscipline(teacherId: number, disciplineId: number) {
     const teacherDiscipline = await prisma.teachersDisciplines.findFirst({

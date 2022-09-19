@@ -1,16 +1,17 @@
-import { Users } from "@prisma/client";
-import prisma from "../database/prisma";
+import prisma from '../config/database';
 
-export type CreateUser = Omit<Users, "id">;
+import { User } from '@prisma/client';
+
+export type CreateUser = Omit<User, "id">;
 
 export async function insertUser(dataUser: CreateUser) {
-    await prisma.users.create({
+    await prisma.user.create({
         data: dataUser
     })
 }
 
 export async function findByEmail(email: string) {
-    return await prisma.users.findFirst({
+    return await prisma.user.findFirst({
         where: {
             email
         }
@@ -18,7 +19,7 @@ export async function findByEmail(email: string) {
 }
 
 export async function findById(id: number) {
-    return await prisma.users.findUnique({
+    return await prisma.user.findUnique({
         where: {
             id
         }
@@ -26,7 +27,7 @@ export async function findById(id: number) {
 }
 
 export async function getUsers() {
-    const user = await prisma.users.findMany()
+    const user = await prisma.user.findMany()
 
     return user
 }

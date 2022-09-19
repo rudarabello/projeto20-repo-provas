@@ -1,7 +1,7 @@
-import prisma from "../database/prisma";
+import prisma from "../config/database";
 
 export async function getTeacherById(id: number) {
-    const teacher = await prisma.teachers.findFirst({
+    const teacher = await prisma.teacher.findFirst({
         where: {
             id
         }

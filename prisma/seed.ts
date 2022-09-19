@@ -12,7 +12,7 @@ async function main() {
 
     await prisma.$transaction(
         terms.map((term) =>
-            prisma.terms.upsert({
+            prisma.term.upsert({
                 where: term,
                 update: {},
                 create: term,
@@ -28,7 +28,7 @@ async function main() {
 
     await prisma.$transaction(
         categories.map((categorie) =>
-            prisma.categorys.upsert({
+            prisma.category.upsert({
                 where: categorie,
                 update: {},
                 create: categorie,
@@ -43,7 +43,7 @@ async function main() {
 
     await prisma.$transaction(
         teachers.map((teacher) =>
-            prisma.teachers.upsert({
+            prisma.teacher.upsert({
                 where: teacher,
                 update: {},
                 create: teacher,
@@ -60,7 +60,7 @@ async function main() {
 
     await prisma.$transaction(
         disciplines.map((discipline) =>
-            prisma.disciplines.upsert({
+            prisma.discipline.upsert({
                 where: { name: discipline.name },
                 update: {},
                 create: discipline,

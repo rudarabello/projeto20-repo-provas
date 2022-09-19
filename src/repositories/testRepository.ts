@@ -1,11 +1,11 @@
-import prisma from '../database/prisma';
+import prisma from '../config/database';
 
-import { Tests } from '@prisma/client';
+import { Test } from '@prisma/client';
 
-export type CreateTest = Omit<Tests, "id">
+export type CreateTest = Omit<Test, "id">
 
 export async function insertTest(dataTest: CreateTest) {
-    const testInserted = await prisma.tests.create({
+    const testInserted = await prisma.test.create({
         data: dataTest
     });
 
@@ -13,7 +13,7 @@ export async function insertTest(dataTest: CreateTest) {
 }
 
 export async function getTestsFromDiscipline() {
-    const terms = await prisma.terms.findMany({
+    const terms = await prisma.term.findMany({
         select: {
             number: true,
             discipline: {
@@ -27,7 +27,7 @@ export async function getTestsFromDiscipline() {
     });
 
 
-    const categories = await prisma.categorys.findMany({
+    const categories = await prisma.category.findMany({
         select: {
             id: true,
             name: true,
@@ -82,14 +82,14 @@ export async function getTestsFromDiscipline() {
 }
 
 export async function getTestsFromTeacher() {
-    const teachers = await prisma.teachers.findMany({
+    const teachers = await prisma.teacher.findMany({
         select: {
             id: true,
             name: true,
         }
     });
 
-    const categories = await prisma.categorys.findMany({
+    const categories = await prisma.category.findMany({
         select: {
             id: true,
             name: true,
@@ -139,7 +139,7 @@ export async function getTestsFromTeacher() {
 };
 
 export async function getTestFromId(id: number) {
-    const test = await prisma.tests.findUnique({
+    const test = await prisma.test.findUnique({
         where: {
             id
         },

@@ -1,25 +1,26 @@
-import { Request, Response } from "express";
-import * as authServices from "../services/authService"
+import { NextFunction, Request, Response } from 'express';
+
+import * as authService from '../services/authService'
 
 export async function createUser(
     req: Request,
-    res: Response,
+    res: Response
 ) {
+    const { email, password } = req.body;
 
-    const { email, password }: { email: string, password: string } = req.body;
+    await authService.createUser({ email, password });
 
-    await authServices.signUp({ email, password });
-
-    res.status(201).send({ message: "User successfully registered!" });
+    res.status(201).send('user registred sucessfully');
 }
 
 export async function loginUser(
     req: Request,
     res: Response,
+    next: NextFunction
 ) {
-    const { email, password }: { email: string, password: string } = req.body;
+    const { email, password } = req.body;
 
-    const token = await authServices.signIn({ email, password });
+    const token = await authService.loginUser({ email, password });
 
     res.status(200).send({ token });
 }
