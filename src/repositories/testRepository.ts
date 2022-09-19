@@ -1,58 +1,171 @@
-import prisma from "../database/prisma";
-import { TestData } from "../types/testType";
+import prisma from '../database/prisma';
 
-export async function addTest(test: TestData) {
-    await prisma.tests.create({ data: test });
+import { Tests } from '@prisma/client';
+
+export type CreateTest = Omit<Tests, "id">
+
+export async function insertTest(dataTest: CreateTest) {
+    const testInserted = await prisma.tests.create({
+        data: dataTest
+    });
+
+    return testInserted;
 }
 
-export async function findTestByName(name: string) {
-    return prisma.tests.findUnique({ where: { name } });
-}
-
-export async function findTestByDisciplineId(id: number) {
-    return prisma.teachersDisciplines.findMany({
-        where: {
-            disciplineId: id
-        }, include: {
-            disciplines: {
-                select: {
-                    name: true
-                }
-            },
-            Tests: {
+export async function getTestsFromDiscipline() {
+    const terms = await prisma.terms.findMany({
+        select: {
+            number: true,
+            discipline: {
                 select: {
                     id: true,
                     name: true,
-                    pdfUrl: true
-                }
+                    teachersDscipline: true
+                },
             },
-            teachers: true
-        }
-    })
-}
-
-export async function findTestByTeacherId(id: number) {
-    return prisma.teachers.findMany({
-        where: {
-            id: id
         },
-        include: {
-            TeachersDisciplines: {
+    });
+
+
+    const categories = await prisma.categorys.findMany({
+        select: {
+            id: true,
+            name: true,
+            tests: {
                 include: {
-                    disciplines: {
+                    teachersDiscipline: {
                         select: {
-                            name: true
-                        }
-                    },
-                    Tests: {
-                        select: {
-                            id: true,
-                            name: true,
-                            pdfUrl: true
+                            disciplineId: true,
+                            teacher: {
+                                select: {
+                                    name: true,
+                                    id: true
+                                }
+                            }
                         }
                     }
                 }
             }
         }
     });
+
+    const testsWithCategory = terms.map((term) => {
+        return {
+            term: term.number,
+            disciplines: term.discipline.map((discipline) => {
+                return {
+                    id: discipline.id,
+                    name: discipline.name,
+                    categories: categories.map((categorie) => {
+                        return {
+                            id: categorie.id,
+                            name: categorie.name,
+                            tests: categorie.tests.map((test) => {
+                                if (test.teachersDiscipline.disciplineId === discipline.id)
+                                    return {
+                                        id: test.id,
+                                        name: test.name,
+                                        teacherName: test.teachersDiscipline.teacher.name,
+                                        teacherId: test.teachersDiscipline.teacher.id,
+                                        pdfUrl: test.pdfUrl
+                                    }
+                            }).filter((testExists) => testExists)
+                        }
+                    }).filter((categoriesExists) => categoriesExists.tests.length > 0)
+                }
+            })
+        }
+    });
+
+    return testsWithCategory;
+
+}
+
+export async function getTestsFromTeacher() {
+    const teachers = await prisma.teachers.findMany({
+        select: {
+            id: true,
+            name: true,
+        }
+    });
+
+    const categories = await prisma.categorys.findMany({
+        select: {
+            id: true,
+            name: true,
+            tests: {
+                select: {
+                    id: true,
+                    name: true,
+                    teachersDiscipline: {
+                        select: {
+                            teacherId: true,
+                            discipline: {
+                                select: {
+                                    name: true,
+                                    id: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const testsWithCategory = teachers.map((teacher) => {
+        return {
+            id: teacher.id,
+            name: teacher.name,
+            categories: categories.map((categorie) => {
+                return {
+                    id: categorie.id,
+                    name: categorie.name,
+                    tests: categorie.tests.map((test) => {
+                        if (teacher.id === test.teachersDiscipline.teacherId)
+                            return {
+                                id: test.id,
+                                name: test.name,
+                                disciplineName: test.teachersDiscipline.discipline.name,
+                                disciplineId: test.teachersDiscipline.discipline.id,
+                            }
+                    }).filter((testExists) => testExists)
+                }
+            }).filter((categorieExists) => categorieExists.tests.length > 0)
+        }
+    })
+
+    return testsWithCategory
+};
+
+export async function getTestFromId(id: number) {
+    const test = await prisma.tests.findUnique({
+        where: {
+            id
+        },
+        select: {
+            name: true,
+            category: {
+                select: {
+                    name: true
+                }
+            },
+            teachersDiscipline: {
+                select: {
+                    teacher: {
+                        select: {
+                            name: true
+                        }
+                    },
+                    discipline: {
+                        select: {
+                            name: true
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+    return test;
 }
