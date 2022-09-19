@@ -24,3 +24,12 @@ export async function inserUser(user: { password: string, confirmPassword: strin
         }
     });
 }
+
+export function __userFactory() {
+    const password = faker.internet.password();
+    return {
+        email: faker.internet.email(),
+        password,
+        confirmPass: password
+    }
+};

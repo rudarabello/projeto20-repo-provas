@@ -1,21 +1,25 @@
 import { Request, Response } from "express";
 import * as authServices from "../services/authService"
 
-export async function signUp(req: Request, res: Response) {
+export async function createUser(
+    req: Request,
+    res: Response,
+) {
 
-    const { email, password, confirmPass }:
-        { email: string, password: string, confirmPass: string } = req.body;
+    const { email, password }: { email: string, password: string } = req.body;
 
-    await authServices.signUp(email, password, confirmPass);
+    await authServices.signUp({ email, password });
 
     res.status(201).send({ message: "User successfully registered!" });
 }
 
-export async function signIn(req: Request, res: Response) {
-    const { email, password, confirmPass }:
-        { email: string, password: string, confirmPass: string } = req.body;
+export async function loginUser(
+    req: Request,
+    res: Response,
+) {
+    const { email, password }: { email: string, password: string } = req.body;
 
-    const userInfo = await authServices.signIn(email, password, confirmPass);
+    const token = await authServices.signIn({ email, password });
 
-    res.status(200).send(userInfo);
+    res.status(200).send({ token });
 }

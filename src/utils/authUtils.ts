@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import { number } from 'joi';
 import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 
 dotenv.config();
@@ -15,7 +16,7 @@ export function validatePassword(password: string, hashedPassword: string): bool
 
 
 export function generateToken(userId: number) {
-    return jwt.sign({ userId }, process.env.JWT_SECRET as Secret, { expiresIn: '1d' });
+    return jwt.sign({ userId: number }, process.env.JWT_SECRET as Secret, { expiresIn: '1d' });
 }
 
 export function verifyToken(token: string): string | JwtPayload {

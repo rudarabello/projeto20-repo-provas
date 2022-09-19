@@ -1,37 +1,25 @@
 import { verifyError } from "../middlewares/errorHandler";
-import * as authMethods from "../repositories/authRepository";
-import { UserData } from "../types/userType";
+import * as authRepository from "../repositories/authRepository";
 import { encrypt, generateToken, validatePassword } from "../utils/authUtils";
+import * as errorUtils from '../utils/errorUtils';
 
-export async function signUp(email: string, password: string, confirmPass: string) {
+export async function signUp(dataUser: authRepository.CreateUser) {
+    const { email, password } = dataUser;
+    const checkUser = await authRepository.findByEmail(email);
+    if (checkUser) throw errorUtils.conflictError('user');
+    const passwordHash = encrypt(password);
+    authRepository.insertUser({ email, password: passwordHash })
+}
 
-    if (password !== confirmPass) throw verifyError(401, "Password and confirm password doesn't match!")
-
-    const user: UserData = {
-        email,
-        password: encrypt(password)
+export async function signIn(dataUser: authRepository.CreateUser) {
+    try {
+        const { email, password } = dataUser;
+        const user = await authRepository.findByEmail(email);
+        if (!user) throw errorUtils.unauthorizedError('credentials');
+        if (!validatePassword(password, user.password)) throw errorUtils.unauthorizedError('credentials');
+        const token = generateToken(user.id);
+        return token;
+    } catch (error) {
+        console.log(error)
     }
-
-    const checkUser = await authMethods.findUserByEmail(email);
-
-    if (checkUser) throw verifyError(409, "This email was already registered");
-
-    await authMethods.signUp(user).catch(
-        () =>
-            verifyError(500, "Database error, couldn't insert user data!"))
-}
-
-export async function signIn(email: string, password: string, confirmPass: string) {
-
-    if (password !== confirmPass) throw verifyError(401, "Password and confirm password doesn't match!")
-
-    const user = await authMethods.findUserByEmail(email);
-
-    if (!user) throw verifyError(401, "There's no user registered with this email!");
-
-    if (await validatePassword(password, user.password)) throw verifyError(401, "Wrong password!");
-
-    const userInfo = generateToken(user.id);
-
-    return userInfo;
-}
+};
