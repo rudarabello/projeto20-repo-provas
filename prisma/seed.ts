@@ -1,4 +1,4 @@
-import prisma from "../src/database/prisma";
+import prisma from "../src/config/database";
 
 async function main() {
     const terms = [

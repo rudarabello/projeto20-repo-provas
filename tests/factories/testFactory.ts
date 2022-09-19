@@ -1,19 +1,11 @@
+import { faker } from "@faker-js/faker";
 
-import { faker } from '@faker-js/faker';
-import supertest from "supertest";
-import app from "../../src/app";
-
-export function __testFactory() {
+export async function generateTest() {
     return {
-        name: faker.word.noun(),
-        pdfUrl: faker.internet.avatar() + '.pdf',
+        name: faker.name.firstName(),
+        pdfUrl: faker.internet.url(),
         categoryId: 1,
-        teacherDisciplineId: 1
+        teacherId: 1,
+        disciplineId: 2
     }
-}
-
-export async function login(user: any) {
-    await supertest(app).post('/sign-up').send(user);
-
-    return await supertest(app).post('/sign-in').send(user);
 }
